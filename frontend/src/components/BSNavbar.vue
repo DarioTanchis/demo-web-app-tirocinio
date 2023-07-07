@@ -34,8 +34,8 @@
             </li>
             </ul>
             <form v-if="isHome" class="form-inline my-2 my-lg-0 search">
-            <span><input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"></span>
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Cerca</button>
+            <span><input v-model="searchString" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"></span>
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit" @click="this.Search">Cerca</button>
             </form>
         </div>
     </nav>
@@ -44,6 +44,7 @@
 <script>
     import router from '@/router';
     import { useUserStore } from "@/stores/user";
+    import { useSearchStore } from '@/stores/search';
 
     export default{
         name:"BSNavbar",
@@ -53,8 +54,11 @@
                 userStore: Object,
                 isHome: Boolean,
                 isLogin: Boolean,
-                isSignup: Boolean
+                isSignup: Boolean,
+                searchString:''
             }
+        },
+        props:{
         },
         watch: {
             '$route': function (from, to) {
@@ -102,6 +106,13 @@
                 e.preventDefault();
 
                 this.userStore.$patch({jwt:'',name:''})
+            },
+            Search(e){
+                e.preventDefault();
+
+                const searchStore = useSearchStore();
+
+                searchStore.$patch({ search:this.searchString });
             }
         },
     }
